@@ -4,7 +4,7 @@
         ".build": true,
         ".vscode": true,
         "**/*-lock.json": true,
-        "**/*.js": true,
+        "**/*.jsx": true,
         "node_modules": true
     }
 }

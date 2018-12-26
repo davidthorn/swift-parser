@@ -27,7 +27,7 @@ export class RawDataStructure {
         const parsedResult = parseText(lines.join('\n'));
         lines.shift(); /// remove line with curly bracket
         data.inner = parsedResult.closed;
-        const newLines = parsedResult.old.split('\n').filter(l => {
+        const newLines = parsedResult.closed.split('\n').filter(l => {
             let f = l.trim();
             if (f !== '\n')
                 return f;
