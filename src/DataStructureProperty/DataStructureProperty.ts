@@ -1,5 +1,5 @@
-import { AccessControlType, UndefinedAccessControl, RawAccessControl } from '../AccessControl';
-import { UndefinedVariable, VariableType, RawVariable } from '../Variable';
+import { AccessControlType, UndefinedAccessControl } from '../AccessControl';
+import { UndefinedVariable, VariableType } from '../Variable';
 import { DataStructurePropertyType } from './DataStructurePropertyType';
 
 export class DataStructureProperty implements DataStructurePropertyType{

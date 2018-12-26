@@ -29,13 +29,11 @@ export class RawDataStructure {
         data.inner = parsedResult.closed;
         const newLines = parsedResult.closed.split('\n').filter(l => {
             let f = l.trim();
-            if (f !== '\n')
-                return f;
+            return (f !== '\n') ? f : undefined
         });
         const remainingLines = parsedResult.remaining.split('\n').filter(l => {
             let f = l.trim();
-            if (f !== '\n')
-                return f;
+            return (f !== '\n') ? f : undefined
         });
         let properties = RawProperty.parse(newLines);
         data.properties = data.properties.concat(properties);

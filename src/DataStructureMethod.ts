@@ -50,6 +50,7 @@ export class RawMethod {
         const newLines = parsedResult.remaining.split('\n').filter(l => {
             let f = l.trim()
             if(f !== '\n') return f
+            return
         })
 
         return {

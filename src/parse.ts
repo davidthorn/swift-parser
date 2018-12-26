@@ -59,6 +59,6 @@ while(lines.length > 0) {
 }
 
 
-console.log(currentDataStructure)
+console.log(classes)
 
 
