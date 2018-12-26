@@ -1,0 +1,10 @@
+{
+    "files.defaultLanguage": "ts",
+    "files.exclude": {
+        ".build": true,
+        ".vscode": true,
+        "**/*-lock.json": true,
+        "**/*.js": true,
+        "node_modules": true
+    }
+}
