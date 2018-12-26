@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AccessControl_1 = require("./AccessControl");
 const Variable_1 = require("./Variable");
 const rawProperty = {
-    regexp: /(public|internal|private|fileprivate)?\s*(var|let){1}\s+([\w\d]+)\s*:\s+([\w\d]+)\s*=\s*\"?([\w\d]+)"?;?{?/,
+    regexp: /(public|internal|private|fileprivate)?\s*(weak|unowned)?\s*(var|let){1}\s+([\w\d]+)\s*:\s+([\w\d]+)\s*=\s*\"?([\w\d]+)"?;?{?/,
     accessControl: new AccessControl_1.UndefinedAccessControl(),
     variableType: new Variable_1.UndefinedVariable(),
+    arc: undefined,
     name: undefined,
     value: undefined,
     completed: false,
@@ -29,10 +30,11 @@ class RawProperty {
             throw new Error('no property found in line data');
         const localProperty = RawProperty.create();
         localProperty.accessControl = AccessControl_1.RawAccessControl.parse(searchProperty[1]);
-        localProperty.variableType = Variable_1.RawVariable.parse(searchProperty[2]);
-        localProperty.name = getPropertyField(searchProperty[3]);
-        localProperty.type = getPropertyField(searchProperty[4]);
-        localProperty.value = getPropertyField(searchProperty[5]);
+        localProperty.arc = searchProperty[2];
+        localProperty.variableType = Variable_1.RawVariable.parse(searchProperty[3]);
+        localProperty.name = getPropertyField(searchProperty[4]);
+        localProperty.type = getPropertyField(searchProperty[5]);
+        localProperty.value = getPropertyField(searchProperty[6]);
         localProperty.started = true;
         localProperty.completed = false;
         return localProperty;

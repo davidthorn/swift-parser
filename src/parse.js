@@ -59,4 +59,4 @@ for (let line of lines) {
     }
 }
 //console.log(currentDataStructure)
-//console.log(currentProperty)
+console.log(currentProperty);
