@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import  { DataStructure, RawDataStructure } from './DataStructure'
-import { DataStructureProperty, RawProperty} from './DataStructureProperty'
+import  { DataStructure } from './DataStructure/DataStructure'
+import { RawDataStructure } from "./DataStructure/RawDataStructure";
 import { DataStructureMethod, RawMethod } from './DataStructureMethod'
 
 let  currentDataStructure: DataStructure = RawDataStructure.create()
@@ -47,7 +47,7 @@ while(lines.length > 0) {
             const { remainingLines , property, error }  = RawDataStructure.parse(lines)
             if(error !== undefined) throw error
             if(property === undefined) throw new Error('something wrong happened here')
-            currentDataStructure = property
+            currentDataStructure= property
             currentDataStructure.completed = true
             lines = remainingLines
             classes.push(currentDataStructure)

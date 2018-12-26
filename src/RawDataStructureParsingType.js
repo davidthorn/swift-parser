@@ -20,7 +20,6 @@ exports.getStructureType = (structure) => {
 };
 class RawDataStructureParsingType {
     constructor() {
-        this.regexp = /(public|private|internal)?\s*(class|struct|protocol|enum)\s+([\w\d]+)\s+{$/;
         this.type = new UndefinedDataStructure_1.UndefinedDataStructure();
         this.accessControl = new AccessControl_1.UndefinedAccessControl();
         this.name = undefined;
@@ -31,4 +30,5 @@ class RawDataStructureParsingType {
         this.inner = "";
     }
 }
+RawDataStructureParsingType.regexp = /(public|private|internal)?\s*(class|struct|protocol|enum)\s+([\w\d]+)\s+{$/;
 exports.RawDataStructureParsingType = RawDataStructureParsingType;

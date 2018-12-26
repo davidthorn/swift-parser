@@ -25,17 +25,24 @@ class PrivateAccessControl {
 }
 exports.PrivateAccessControl = PrivateAccessControl;
 class RawAccessControl {
+    /**
+     * Parses the access string provided into a AccessControlType
+     *
+     * @static
+     * @param {(String | undefined | null)} access
+     * @returns {AccessControlType}
+     * @memberof RawAccessControl
+     */
     static parse(access) {
         switch (access) {
             case undefined:
-                return new UndefinedAccessControl();
+                return new InternalAccessControl();
             case "internal":
                 return new InternalAccessControl();
             case "public":
                 return new PublicAccessControl();
             case "private":
                 return new PrivateAccessControl();
-            case null: throw new Error('it cant be null');
             default:
                 return new UndefinedAccessControl();
         }

@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const fs = tslib_1.__importStar(require("fs"));
 const path = tslib_1.__importStar(require("path"));
-const DataStructure_1 = require("./DataStructure");
+const RawDataStructure_1 = require("./DataStructure/RawDataStructure");
 const DataStructureMethod_1 = require("./DataStructureMethod");
-let currentDataStructure = DataStructure_1.RawDataStructure.create();
+let currentDataStructure = RawDataStructure_1.RawDataStructure.create();
 let currentMethod = DataStructureMethod_1.RawMethod.create();
 let classes = [];
 const contents = fs.readFileSync(path.join(process.cwd(), 'Sources', 'swift-reflection', 'SimpleObject.swift'), { encoding: 'utf8' });
@@ -37,7 +37,7 @@ while (lines.length > 0) {
             }
             break;
         case false:
-            const { remainingLines, property, error } = DataStructure_1.RawDataStructure.parse(lines);
+            const { remainingLines, property, error } = RawDataStructure_1.RawDataStructure.parse(lines);
             if (error !== undefined)
                 throw error;
             if (property === undefined)
@@ -50,4 +50,4 @@ while (lines.length > 0) {
             break;
     }
 }
-console.log(classes);
+console.log(currentDataStructure);

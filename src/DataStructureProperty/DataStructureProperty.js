@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const AccessControl_1 = require("./AccessControl");
-const Variable_1 = require("./Variable");
+const AccessControl_1 = require("../AccessControl");
+const Variable_1 = require("../Variable");
 class DataStructureProperty {
     constructor() {
         this.accessControl = new AccessControl_1.UndefinedAccessControl();
