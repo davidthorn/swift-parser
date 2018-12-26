@@ -83,16 +83,21 @@ class RawDataStructure {
         const parsedResult = parseLastBracket_1.parseText(lines.join('\n'));
         lines.shift(); /// remove line with curly bracket
         data.inner = parsedResult.closed;
-        const newLines = parsedResult.remaining.split('\n').filter(l => {
+        const newLines = parsedResult.old.split('\n').filter(l => {
+            let f = l.trim();
+            if (f !== '\n')
+                return f;
+        });
+        const remainingLines = parsedResult.remaining.split('\n').filter(l => {
             let f = l.trim();
             if (f !== '\n')
                 return f;
         });
         let properties = DataStructureProperty_1.RawProperty.parse(newLines);
-        data.properties.concat(properties);
+        data.properties = data.properties.concat(properties);
         return {
             property: data,
-            remainingLines: newLines
+            remainingLines: remainingLines
         };
     }
 }

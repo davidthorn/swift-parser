@@ -4,40 +4,17 @@ const tslib_1 = require("tslib");
 const fs = tslib_1.__importStar(require("fs"));
 const path = tslib_1.__importStar(require("path"));
 const DataStructure_1 = require("./DataStructure");
-const DataStructureProperty_1 = require("./DataStructureProperty");
 const DataStructureMethod_1 = require("./DataStructureMethod");
-let currentProperty = DataStructureProperty_1.RawProperty.create();
 let currentDataStructure = DataStructure_1.RawDataStructure.create();
 let currentMethod = DataStructureMethod_1.RawMethod.create();
 let classes = [];
 const contents = fs.readFileSync(path.join(process.cwd(), 'Sources', 'swift-reflection', 'SimpleObject.swift'), { encoding: 'utf8' });
 let lines = contents.split('\n');
 while (lines.length > 0) {
-    const handlingClass = currentDataStructure.started;
+    const handlingClass = currentDataStructure.started && !currentDataStructure.completed;
     switch (handlingClass) {
         case true:
             const handlingMethod = currentMethod.started && !currentMethod.completed;
-            // let handlingProperty = currentProperty.started && !currentProperty.completed
-            // switch(handlingProperty) {
-            //     default: break
-            //     case false:
-            //         try {
-            //             const { remainingLines , property, error } = RawProperty.parse(lines)
-            //             if(error !== undefined) throw error
-            //             if(property === undefined) throw new Error('something wrong happened here')
-            //             currentProperty = property
-            //             currentProperty.completed = true
-            //             handlingProperty = currentProperty.started && currentProperty.completed
-            //             lines = remainingLines
-            //             currentDataStructure.properties.push(currentProperty)
-            //             currentProperty = RawProperty.create()
-            //             continue
-            //         } catch(error){
-            //             //console.log('did not find a property')
-            //         }
-            //     break;
-            // }
-            // if(handlingProperty) break
             switch (handlingMethod) {
                 case false:
                     try {
@@ -66,11 +43,11 @@ while (lines.length > 0) {
             if (property === undefined)
                 throw new Error('something wrong happened here');
             currentDataStructure = property;
+            currentDataStructure.completed = true;
             lines = remainingLines;
             classes.push(currentDataStructure);
             continue;
             break;
     }
 }
-console.log(currentDataStructure);
-console.log(currentProperty);
+console.log(classes);

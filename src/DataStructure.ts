@@ -1,6 +1,7 @@
 import { DataStructureProperty, RawProperty } from './DataStructureProperty'
 import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessControl';
 import { parseText } from './parseLastBracket';
+import { DataStructureMethod, RawMethod } from './DataStructureMethod';
 
 export type DataStructureParsingResult = {
     remainingLines: string[]
@@ -15,7 +16,7 @@ export type DataStructure = {
     accessControl: AccessControlType
     name: string | undefined
     properties: DataStructureProperty[]
-    methods: string[]
+    methods: DataStructureMethod[]
     completed: boolean
     started: boolean
     inner: string
@@ -106,17 +107,22 @@ export class RawDataStructure {
         const parsedResult = parseText(lines.join('\n'))
         lines.shift() /// remove line with curly bracket
         data.inner = parsedResult.closed
-        const newLines = parsedResult.remaining.split('\n').filter(l => {
+        const newLines = parsedResult.old.split('\n').filter(l => {
+            let f = l.trim()
+            if(f !== '\n') return f
+        })
+
+        const remainingLines = parsedResult.remaining.split('\n').filter(l => {
             let f = l.trim()
             if(f !== '\n') return f
         })
 
         let properties = RawProperty.parse(newLines)
-        data.properties.concat(properties)
+        data.properties = data.properties.concat(properties)
         
         return {
             property: data,
-            remainingLines: newLines
+            remainingLines: remainingLines
         }
     }
 

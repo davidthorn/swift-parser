@@ -5,3 +5,11 @@ public class SimpleObject {
 	@IBAction weak func doSomething(){ if(this){ // do } }
 	internal func thorn(){ if(that){ // do } }
 }
+
+public class OtherObject {
+	internal weak var name: String = "james"
+	internal unowned var unOwnedName: String = "stevem"
+	public func toby(){ if(this){ // do } }
+	@IBAction weak func doThat(){ if(this){ // do } }
+	internal func carthage(){ if(that){ // do } }
+}
