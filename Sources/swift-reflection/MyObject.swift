@@ -5,7 +5,7 @@ class test {
 }
 
 public class test1 {
-	internal var name: String { get }
+	internal var name: String = "david"
 	public func david(){ if(this){ // do } }
 	internal func thorn(){ if(that){ // do } }
 }

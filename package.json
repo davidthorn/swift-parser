@@ -2,7 +2,7 @@
   "name": "swift-reflection",
   "version": "1.0.0",
   "description": "A library to learn about how to use reflection with swift ",
-  "main": "src/index.js",
+  "main": "src/parse.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

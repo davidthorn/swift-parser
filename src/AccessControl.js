@@ -24,18 +24,21 @@ class PrivateAccessControl {
     }
 }
 exports.PrivateAccessControl = PrivateAccessControl;
-exports.getAccessControl = (access) => {
-    switch (access) {
-        case undefined:
-            return new UndefinedAccessControl();
-        case "internal":
-            return new InternalAccessControl();
-        case "public":
-            return new PublicAccessControl();
-        case "private":
-            return new PrivateAccessControl();
-        case null: throw new Error('it cant be null');
-        default:
-            return new UndefinedAccessControl();
+class RawAccessControl {
+    static parse(access) {
+        switch (access) {
+            case undefined:
+                return new UndefinedAccessControl();
+            case "internal":
+                return new InternalAccessControl();
+            case "public":
+                return new PublicAccessControl();
+            case "private":
+                return new PrivateAccessControl();
+            case null: throw new Error('it cant be null');
+            default:
+                return new UndefinedAccessControl();
+        }
     }
-};
+}
+exports.RawAccessControl = RawAccessControl;

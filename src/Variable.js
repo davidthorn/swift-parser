@@ -18,12 +18,15 @@ class UndefinedVariable {
     }
 }
 exports.UndefinedVariable = UndefinedVariable;
-exports.getVariableType = (identifier) => {
-    if (identifier === undefined || identifier === null)
-        throw new Error('The identifier must be either var or let it cannot be null or undefined');
-    switch (identifier) {
-        case "var": return new MutableVariable();
-        case "let": return new ImmutableVariable();
-        default: return new UndefinedVariable();
+class RawVariable {
+    static parse(identifier) {
+        if (identifier === undefined || identifier === null)
+            throw new Error('The identifier must be either var or let it cannot be null or undefined');
+        switch (identifier) {
+            case "var": return new MutableVariable();
+            case "let": return new ImmutableVariable();
+            default: return new UndefinedVariable();
+        }
     }
-};
+}
+exports.RawVariable = RawVariable;

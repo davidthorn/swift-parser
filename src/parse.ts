@@ -1,16 +1,18 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { getAccessControl } from './AccessControl'
 import  { DataStructure, RawDataStructure } from './DataStructure'
 import { DataStructureProperty, RawProperty} from './DataStructureProperty'
+import { DataStructureMethod, RawMethod } from './DataStructureMethod'
 
-import {    parsePropertyFromLine
+import {    
 
         } from './SwiftParser'
 
 
 let currentProperty: DataStructureProperty = RawProperty.create()
 let  currentDataStructure: DataStructure = RawDataStructure.create()
+let currentMethod: DataStructureMethod = RawMethod.create()
+
 
 const contents = fs.readFileSync(path.join(process.cwd() , 'Sources' , 'swift-reflection' , 'MyObject.swift') , { encoding: 'utf8' } )
 const lines = contents.split('\n')
@@ -22,23 +24,40 @@ for(let line of lines) {
     switch(handlingClass) {
         case true:
 
-            const handlingProperty = currentProperty.started
-
+            let handlingProperty = currentProperty.started && !currentProperty.completed
+            const handlingMethod = currentMethod.started && !currentMethod.completed
+ 
             switch(handlingProperty) {
-                case true:
-                const searchEndOfDataStructure = line.match(/\s*}\s*/)
-                
-                break;
+                default: break
                 case false:
                 
-                try {
-                    currentProperty = parsePropertyFromLine(line.trim())
-                    
-                    console.log(currentProperty)
-                } catch(error){
-                    //console.log(error.message)
-                }
+                    try {
+                        currentProperty = RawProperty.parse(line.trim())
+                        currentProperty.completed = true
+                        handlingProperty = currentProperty.started && currentProperty.completed
+                    } catch(error){
+                        //console.log('did not find a property')
+                    }
           
+                break;
+            }
+
+            if(handlingProperty) break
+
+            switch(handlingMethod) {
+                case false:
+                try {
+                    currentMethod = RawMethod.parse(line)
+                    currentMethod.completed = true
+                    console.log(currentMethod)
+                } catch(error) {
+                    console.log(error.message)
+                }
+                
+                
+                break;
+                case true:
+               
                 break;
             }
 
@@ -60,6 +79,6 @@ for(let line of lines) {
 }
 
 
-console.log(currentDataStructure)
-console.log(currentProperty)
+//console.log(currentDataStructure)
+//console.log(currentProperty)
 

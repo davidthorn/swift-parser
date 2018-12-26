@@ -66,7 +66,7 @@ class RawDataStructure {
         let data = RawDataStructure.create();
         data.started = true;
         data.type = getStructureType(search[2]);
-        data.accessControl = AccessControl_1.getAccessControl(search[1]);
+        data.accessControl = AccessControl_1.RawAccessControl.parse(search[1]);
         data.name = search[3];
         return data;
     }

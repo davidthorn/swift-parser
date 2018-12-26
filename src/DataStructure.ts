@@ -1,5 +1,5 @@
 import { DataStructureProperty } from './DataStructureProperty'
-import { AccessControlType, UndefinedAccessControl, getAccessControl } from './AccessControl';
+import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessControl';
 
 export type DataStructure = {
     regexp: RegExp
@@ -73,7 +73,7 @@ export class RawDataStructure {
         let data = RawDataStructure.create()
         data.started = true
         data.type = getStructureType(search[2])
-        data.accessControl = getAccessControl(search[1])
+        data.accessControl = RawAccessControl.parse(search[1])
         data.name = search[3]
         return data
     }
