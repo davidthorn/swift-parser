@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const DataStructureProperty_1 = require("./DataStructureProperty");
 const AccessControl_1 = require("./AccessControl");
+const parseLastBracket_1 = require("./parseLastBracket");
 class ClassDataStructure {
     constructor() {
         this.name = "class";
@@ -51,15 +53,24 @@ const rawDataStructure = {
     properties: [],
     methods: [],
     completed: false,
-    started: false
+    started: false,
+    inner: ""
 };
 class RawDataStructure {
     static create() {
-        return Object.create(rawDataStructure);
+        return Object.assign({}, rawDataStructure);
     }
-    static parse(line) {
+    static parseLinesRequired(lines) {
+        let linesRequired = [];
+        var tagOpen = false;
+        var chars = [];
+        const l = lines.join('\n');
+        return linesRequired;
+    }
+    static parse(lines) {
+        const line = lines.length > 0 ? lines[0] : undefined;
         if (line === undefined || line === null)
-            throw new Error('the line cannot be null');
+            return { remainingLines: lines, error: new Error('the line cannot be null') };
         const search = line.match(rawDataStructure.regexp);
         if (search === null || search === undefined)
             throw new Error('no match found for a line');
@@ -68,7 +79,21 @@ class RawDataStructure {
         data.type = getStructureType(search[2]);
         data.accessControl = AccessControl_1.RawAccessControl.parse(search[1]);
         data.name = search[3];
-        return data;
+        lines.shift();
+        const parsedResult = parseLastBracket_1.parseText(lines.join('\n'));
+        lines.shift(); /// remove line with curly bracket
+        data.inner = parsedResult.closed;
+        const newLines = parsedResult.remaining.split('\n').filter(l => {
+            let f = l.trim();
+            if (f !== '\n')
+                return f;
+        });
+        let properties = DataStructureProperty_1.RawProperty.parse(newLines);
+        data.properties.concat(properties);
+        return {
+            property: data,
+            remainingLines: newLines
+        };
     }
 }
 exports.RawDataStructure = RawDataStructure;

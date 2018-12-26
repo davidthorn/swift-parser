@@ -9,35 +9,47 @@ const DataStructureMethod_1 = require("./DataStructureMethod");
 let currentProperty = DataStructureProperty_1.RawProperty.create();
 let currentDataStructure = DataStructure_1.RawDataStructure.create();
 let currentMethod = DataStructureMethod_1.RawMethod.create();
-const contents = fs.readFileSync(path.join(process.cwd(), 'Sources', 'swift-reflection', 'MyObject.swift'), { encoding: 'utf8' });
-const lines = contents.split('\n');
-for (let line of lines) {
+let classes = [];
+const contents = fs.readFileSync(path.join(process.cwd(), 'Sources', 'swift-reflection', 'SimpleObject.swift'), { encoding: 'utf8' });
+let lines = contents.split('\n');
+while (lines.length > 0) {
     const handlingClass = currentDataStructure.started;
     switch (handlingClass) {
         case true:
-            let handlingProperty = currentProperty.started && !currentProperty.completed;
             const handlingMethod = currentMethod.started && !currentMethod.completed;
-            switch (handlingProperty) {
-                default: break;
-                case false:
-                    try {
-                        currentProperty = DataStructureProperty_1.RawProperty.parse(line.trim());
-                        currentProperty.completed = true;
-                        handlingProperty = currentProperty.started && currentProperty.completed;
-                    }
-                    catch (error) {
-                        //console.log('did not find a property')
-                    }
-                    break;
-            }
-            if (handlingProperty)
-                break;
+            // let handlingProperty = currentProperty.started && !currentProperty.completed
+            // switch(handlingProperty) {
+            //     default: break
+            //     case false:
+            //         try {
+            //             const { remainingLines , property, error } = RawProperty.parse(lines)
+            //             if(error !== undefined) throw error
+            //             if(property === undefined) throw new Error('something wrong happened here')
+            //             currentProperty = property
+            //             currentProperty.completed = true
+            //             handlingProperty = currentProperty.started && currentProperty.completed
+            //             lines = remainingLines
+            //             currentDataStructure.properties.push(currentProperty)
+            //             currentProperty = RawProperty.create()
+            //             continue
+            //         } catch(error){
+            //             //console.log('did not find a property')
+            //         }
+            //     break;
+            // }
+            // if(handlingProperty) break
             switch (handlingMethod) {
                 case false:
                     try {
-                        currentMethod = DataStructureMethod_1.RawMethod.parse(line);
+                        const { remainingLines, property, error } = DataStructureMethod_1.RawMethod.parse(lines);
+                        if (error !== undefined)
+                            throw error;
+                        if (property === undefined)
+                            throw new Error('something wrong happened here');
+                        currentMethod = property;
                         currentMethod.completed = true;
-                        console.log(currentMethod);
+                        lines = remainingLines;
+                        continue;
                     }
                     catch (error) {
                         console.log(error.message);
@@ -48,15 +60,17 @@ for (let line of lines) {
             }
             break;
         case false:
-            currentDataStructure = DataStructure_1.RawDataStructure.parse(line);
-            // const search = line.match(/(public|private|internal)?\s*(class|struct|protocol|enum)\s+([\w\d]+)\s+{$/)
-            // if(search === null || search === undefined) continue 
-            // currentDataStructure.started = true
-            // currentDataStructure.type = getStructureType(search[2])
-            // currentDataStructure.accessControl = getAccessControl(search[1])
-            // currentDataStructure.name = search[3]
+            const { remainingLines, property, error } = DataStructure_1.RawDataStructure.parse(lines);
+            if (error !== undefined)
+                throw error;
+            if (property === undefined)
+                throw new Error('something wrong happened here');
+            currentDataStructure = property;
+            lines = remainingLines;
+            classes.push(currentDataStructure);
+            continue;
             break;
     }
 }
-//console.log(currentDataStructure)
+console.log(currentDataStructure);
 console.log(currentProperty);

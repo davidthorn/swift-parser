@@ -1,5 +1,13 @@
-import { DataStructureProperty } from './DataStructureProperty'
+import { DataStructureProperty, RawProperty } from './DataStructureProperty'
 import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessControl';
+import { parseText } from './parseLastBracket';
+
+export type DataStructureParsingResult = {
+    remainingLines: string[]
+    property?: DataStructure
+    error?: Error
+}
+
 
 export type DataStructure = {
     regexp: RegExp
@@ -10,6 +18,7 @@ export type DataStructure = {
     methods: string[]
     completed: boolean
     started: boolean
+    inner: string
 }
 
 export interface DataStructureType {
@@ -57,17 +66,34 @@ const rawDataStructure:DataStructure = {
     properties: [],
     methods: [],
     completed: false,
-    started: false
+    started: false,
+    inner: ""
 }
 
 export class RawDataStructure {
    
     public static create(): DataStructure {
-        return Object.create(rawDataStructure)
+        return {
+            ...rawDataStructure
+        }
     }
 
-    public static parse(line: string | undefined | null): DataStructure {
-        if(line === undefined || line === null) throw new Error('the line cannot be null')
+    public static parseLinesRequired(lines: string[]): string[] {
+
+        let linesRequired: string[] = []
+
+        var tagOpen = false
+        var chars: string[] = []
+        const l = lines.join('\n')
+        
+
+        return linesRequired
+    }
+
+
+    public static parse(lines: string[]): DataStructureParsingResult {
+        const line =  lines.length > 0 ? lines[0] : undefined
+        if(line === undefined || line === null) return { remainingLines: lines, error: new Error('the line cannot be null') }
         const search = line.match(rawDataStructure.regexp)
         if(search === null || search === undefined)  throw new Error('no match found for a line')
         let data = RawDataStructure.create()
@@ -75,7 +101,23 @@ export class RawDataStructure {
         data.type = getStructureType(search[2])
         data.accessControl = RawAccessControl.parse(search[1])
         data.name = search[3]
-        return data
+        
+        lines.shift()
+        const parsedResult = parseText(lines.join('\n'))
+        lines.shift() /// remove line with curly bracket
+        data.inner = parsedResult.closed
+        const newLines = parsedResult.remaining.split('\n').filter(l => {
+            let f = l.trim()
+            if(f !== '\n') return f
+        })
+
+        let properties = RawProperty.parse(newLines)
+        data.properties.concat(properties)
+        
+        return {
+            property: data,
+            remainingLines: newLines
+        }
     }
 
 }
