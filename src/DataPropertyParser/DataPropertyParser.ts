@@ -1,5 +1,5 @@
 
-import { RawAccessControl } from '../AccessLevel';
+import { RawAccessLevel } from '../AccessLevel';
 import { RawVariable } from '../Variable';
 import { DataPropertyParsingResult } from './DataPropertyParsingResult';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
@@ -72,14 +72,14 @@ export class DataPropertyParser {
         const searchProperty = line.trim().match(this.regexp) 
         if(searchProperty === undefined || searchProperty === null) return { error: new Error('no property found in line data') , remainingLines: lines , property : undefined }
         
-        const accessControl = RawAccessControl.parse(searchProperty[1])
+        const AccessLevel = RawAccessLevel.parse(searchProperty[1])
         const value = this.isPropertyField(searchProperty[6])
         const name = this.isPropertyField(searchProperty[4])
         const type = this.isPropertyField(searchProperty[5])
         const varType = RawVariable.parse(searchProperty[3])
         const arc = searchProperty[2]
         
-        let property = new DataProperty(varType , name , type , value , accessControl, arc)
+        let property = new DataProperty(varType , name , type , value , AccessLevel, arc)
         
         this.started = true
         this.completed = false

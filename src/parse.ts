@@ -25,7 +25,7 @@ let d = ''
 classes.forEach(cl => {
 
 d += `
-    ${cl.accessControl.name} ${cl.type.name} ${cl.name} {
+    ${cl.AccessLevel.name} ${cl.type.name} ${cl.name} {
 `
 cl.properties.forEach(p => {
 d += `        

@@ -1,4 +1,4 @@
-import { AccessControlType as AccessLevelType } from '../AccessLevel';
+import { AccessLevelType as AccessLevelType } from '../AccessLevel';
 import { VariableType } from '../Variable';
 
 export interface DataPropertyType {

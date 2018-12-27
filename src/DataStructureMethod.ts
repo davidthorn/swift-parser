@@ -1,4 +1,4 @@
-import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessLevel';
+import { AccessLevelType, UndefinedAccessLevel, RawAccessLevel } from './AccessLevel';
 import { parseText } from './parseLastBracket';
 
 export type DataStructureMethodParsingResult = {
@@ -9,7 +9,7 @@ export type DataStructureMethodParsingResult = {
 
 export type DataStructureMethod = {
     regexp: RegExp
-    accessControl: AccessControlType
+    AccessLevel: AccessLevelType
     methodName: string | undefined
     value: any | undefined
     completed: boolean
@@ -20,7 +20,7 @@ export type DataStructureMethod = {
 const rawMethod: DataStructureMethod = {
     regexp: /\s*(public|internal|private)\s+(func)\s*([\w\d]+)\s?\(([\w\d: _,\s \?=]*)\)\s*{/,
     //regexp: /(public|internal|private|fileprivate)?\s*(func)\s+([\w\d]+)\s*/,
-    accessControl: new UndefinedAccessControl(),
+    AccessLevel: new UndefinedAccessLevel(),
     methodName: undefined,
     value: undefined,
     completed: false,
@@ -42,7 +42,7 @@ export class RawMethod {
         if(search === null || search === undefined) return { remainingLines: lines, error: new Error('no match found for a line') }
         let data = RawMethod.create()
         data.started = true
-        data.accessControl = RawAccessControl.parse(search[1])
+        data.AccessLevel = RawAccessLevel.parse(search[1])
         data.methodName = search[3]
 
         const parsedResult = parseText(lines.join('\n'))

@@ -6,7 +6,7 @@ import { StructDataStructureTypeName } from '../DataStructure/implementations/St
 import { DataStructureType } from '../DataStructure/DataStructureType';
 import { DataStructure } from '../DataStructure/DataStructure';
 import { DataStructureParsingResult } from './DataStructureParsingResult';
-import { RawAccessControl } from '../AccessLevel';
+import { RawAccessLevel } from '../AccessLevel';
 import { parseText } from '../parseLastBracket';
 import { DataPropertyParser } from '../DataPropertyParser/DataPropertyParser';
 
@@ -43,10 +43,10 @@ export class DataStructureParser {
             throw new Error('no match found for a line')
         
         const name = search[3]
-        const accessControl = RawAccessControl.parse(search[1])
+        const AccessLevel = RawAccessLevel.parse(search[1])
         const type = getStructureType(search[2])
         
-        this.structure = new DataStructure(name , type , accessControl)
+        this.structure = new DataStructure(name , type , AccessLevel)
 
         this.started = true;
         
