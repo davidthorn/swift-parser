@@ -1,15 +1,15 @@
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataStructureType } from './DataStructureType';
-import { DataStructurePropertyType } from '../DataStructureProperty/DataStructurePropertyType';
 import { DataStructureMethod } from '../DataStructureMethod';
 import { AccessControlType } from '../AccessControl';
+import { DataPropertyType } from '../DataProperty/DataPropertyType';
 
 export class DataStructure implements DataStructureType {
     
     type: DataStructureTypeName
     accessControl: AccessControlType
     name: string
-    properties: DataStructurePropertyType[]
+    properties: DataPropertyType[]
     methods: DataStructureMethod[]
 
     public constructor(name: string , type: DataStructureTypeName , accessControl: AccessControlType ) {

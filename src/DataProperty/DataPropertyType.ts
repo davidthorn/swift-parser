@@ -1,13 +1,11 @@
 import { AccessControlType } from '../AccessControl';
 import { VariableType } from '../Variable';
 
-export interface DataStructurePropertyType {
+export interface DataPropertyType {
     accessControl: AccessControlType
     variableType: VariableType
-    arc: string | undefined
-    name: string | undefined
+    arc: string
+    name: string
     value: any | undefined
-    completed: boolean
-    started: boolean
-    type: string | undefined
+    type: string
 }

@@ -1,10 +1,16 @@
-import { DataStructureProperty } from './DataStructureProperty';
+
 import { RawAccessControl } from '../AccessControl';
 import { RawVariable } from '../Variable';
-import { DataStructurePropertyParsingResult } from './DataStructurePropertyParsingResult';
+import { DataPropertyParsingResult } from './DataPropertyParsingResult';
+import { DataPropertyType } from '../DataProperty/DataPropertyType';
+import { DataProperty } from '../DataProperty/DataProperty';
 
-export class RawProperty {
+export class DataPropertyParser {
 
+    regexp: RegExp = /(public|internal|private|fileprivate)?\s*(weak|unowned)?\s*(var|let){1}\s+([\w\d]+)\s*:\s+([\w\d]+)\s*=\s*\"?([\w\d]+)"?;?{?/
+    completed: boolean = false
+    started:  boolean = false
+    
     /**
      * Checks if the property Identifier provided is valid and if not throws an error
      *
@@ -13,22 +19,11 @@ export class RawProperty {
      * @returns {string}
      * @memberof RawProperty
      */
-    static isPropertyField(propertyIdentifier: string | undefined | null ): string {
+    isPropertyField(propertyIdentifier: string | undefined | null ): string {
         if(propertyIdentifier === undefined || propertyIdentifier === null) throw new Error('The property cannot be null or undefined')
         return propertyIdentifier
     }
 
-
-    /**
-     * Factory function to create a DataStructureProperty
-     *
-     * @static
-     * @returns {DataStructureProperty}
-     * @memberof RawProperty
-     */
-    public static create(): DataStructureProperty {
-        return new DataStructureProperty()
-    }
 
     /**
      * Attempts to parse as many data structure property objects which it can 
@@ -39,8 +34,9 @@ export class RawProperty {
      * @returns {DataStructureProperty[]}
      * @memberof RawProperty
      */
-    public static parse(lines: string[]): DataStructureProperty[] {
-        let properties: DataStructureProperty[] = []
+    public parse(lines: string[]): DataPropertyType[] {
+        
+        let properties: DataPropertyType[] = []
 
         let tmpLines = lines
 
@@ -70,22 +66,26 @@ export class RawProperty {
      * @returns {DataStructurePropertyParsingResult}
      * @memberof RawProperty
      */
-    public static parseProperty(lines: string[]): DataStructurePropertyParsingResult {
+    public parseProperty(lines: string[]): DataPropertyParsingResult {
         const line = lines[0]
         if(line === undefined || line === null ) return { error: new Error('line must not be null or undefined') , remainingLines: lines , property : undefined }
-        const searchProperty = line.trim().match(DataStructureProperty.regexp) 
+        const searchProperty = line.trim().match(this.regexp) 
         if(searchProperty === undefined || searchProperty === null) return { error: new Error('no property found in line data') , remainingLines: lines , property : undefined }
-        const localProperty = RawProperty.create()
-        localProperty.accessControl = RawAccessControl.parse(searchProperty[1])
-        localProperty.arc = searchProperty[2]
-        localProperty.variableType = RawVariable.parse(searchProperty[3])
-        localProperty.name = RawProperty.isPropertyField(searchProperty[4])
-        localProperty.type = RawProperty.isPropertyField(searchProperty[5])
-        localProperty.value = RawProperty.isPropertyField(searchProperty[6])
-        localProperty.started = true
-        localProperty.completed = false
+        
+        const accessControl = RawAccessControl.parse(searchProperty[1])
+        const value = this.isPropertyField(searchProperty[6])
+        const name = this.isPropertyField(searchProperty[4])
+        const type = this.isPropertyField(searchProperty[5])
+        const varType = RawVariable.parse(searchProperty[3])
+        const arc = searchProperty[2]
+        
+        let property = new DataProperty(varType , name , type , value , accessControl, arc)
+        
+        this.started = true
+        this.completed = false
+        
         return {
-            property: localProperty,
+            property: property,
             error: undefined,
             remainingLines: lines.splice(1 , lines.length)
         }

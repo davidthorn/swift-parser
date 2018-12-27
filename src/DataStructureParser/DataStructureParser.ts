@@ -1,5 +1,5 @@
 import { DataStructureTypeName} from '../DataStructure/DataStructureTypeName';
-import { ClassDataStructureTypeName } from '../DataStructure/ClassDataStructureTypeName';
+import { ClassDataStructureTypeName } from '../DataStructure/implementations/ClassDataStructureTypeName';
 import { EnumDataStructureTypeName } from '../DataStructure/implementations/EnumDataStructureTypeName';
 import { ProtocolDataStructure } from '../DataStructure/implementations/ProtocolDataStructure';
 import { StructDataStructureTypeName } from '../DataStructure/implementations/StructDataStructureTypeName';
@@ -8,7 +8,8 @@ import { DataStructure } from '../DataStructure/DataStructure';
 import { DataStructureParsingResult } from './DataStructureParsingResult';
 import { RawAccessControl } from '../AccessControl';
 import { parseText } from '../parseLastBracket';
-import { RawProperty } from '../DataStructureProperty/RawProperty';
+import { DataPropertyParser } from '../DataPropertyParser/DataPropertyParser';
+
 
 export const getStructureType = (structure: string | undefined | null): DataStructureTypeName=> {
     if (structure === undefined || structure === null) throw new Error('The structure cannot be null or undefined it must be either class|struct|enum|protocol')
@@ -53,16 +54,8 @@ export class DataStructureParser {
         
         this.inner = inner;
         
-        // const newLines = parsedResult.closed.split('\n').filter(l => {
-        //     let f = l.trim();
-        //     return (f !== '\n') ? f : undefined
-        // });
-
-        // const remainingLines = parsedResult.remaining.split('\n').filter(l => {
-        //     let f = l.trim();
-        //     return (f !== '\n') ? f : undefined
-        // });
-        let properties = RawProperty.parse(newLines);
+        const propertyParser = new DataPropertyParser()
+        let properties = propertyParser.parse(newLines);
         this.structure.properties = this.structure.properties.concat(properties);
         
         return {
