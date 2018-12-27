@@ -16,7 +16,7 @@ export interface DataPropertyType {
      * @type {AccessLevelType}
      * @memberof DataPropertyType
      */
-    accessControl: AccessLevelType
+    accessLevel: AccessLevelType
     variableType: VariableType
     arc: string
     name: string

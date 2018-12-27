@@ -4,7 +4,7 @@ import { DataPropertyType as DataPropertyType } from './DataPropertyType';
 
 export class DataProperty implements DataPropertyType{
     
-    accessControl: AccessControlType
+    accessLevel: AccessControlType
     variableType: VariableType
     arc: string
     name: string
@@ -30,7 +30,7 @@ export class DataProperty implements DataPropertyType{
         this.name = name
         this.type = type
         this.value = value
-        this.accessControl = accessControl
+        this.accessLevel = accessControl
         this.arc = arc
     }
 

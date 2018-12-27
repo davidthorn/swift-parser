@@ -29,7 +29,7 @@ d += `
 `
 cl.properties.forEach(p => {
 d += `        
-        ${p.accessControl.name} ${p.arc} ${p.variableType.name} ${p.name}: ${p.type} = "${p.value}"
+        ${p.accessLevel.name} ${p.arc} ${p.variableType.name} ${p.name}: ${p.type} = "${p.value}"
 ` 
 })
 d += `
