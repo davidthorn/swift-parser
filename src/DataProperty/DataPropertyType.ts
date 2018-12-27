@@ -17,6 +17,13 @@ export interface DataPropertyType {
      * @memberof DataPropertyType
      */
     accessLevel: AccessLevelType
+
+    /**
+     * A variable type can either be var, let or dynamic
+     *
+     * @type {VariableType}
+     * @memberof DataPropertyType
+     */
     variableType: VariableType
     arc: string
     name: string
