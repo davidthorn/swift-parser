@@ -1,4 +1,4 @@
-import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessControl';
+import { AccessControlType, UndefinedAccessControl, RawAccessControl } from './AccessLevel';
 import { parseText } from './parseLastBracket';
 
 export type DataStructureMethodParsingResult = {

@@ -18,6 +18,14 @@ export class PrivateAccessControl implements AccessControlType {
     name: string = "private"
 }
 
+export class FilePrivateAccessControl implements AccessControlType {
+    name: string = "fileprivate"
+}
+
+export class OpenAccessControl implements AccessControlType {
+    name: string = "open"
+}
+
 export class RawAccessControl {
 
     /**
@@ -32,12 +40,16 @@ export class RawAccessControl {
         switch(access) {
             case undefined: 
             return new InternalAccessControl()
+            case "open": 
+            return new OpenAccessControl()
             case "internal": 
             return new InternalAccessControl()
             case "public": 
             return new PublicAccessControl()
             case "private": 
             return new PrivateAccessControl()
+            case "fileprivate": 
+            return new FilePrivateAccessControl()
             default:
                 return new UndefinedAccessControl()
         }

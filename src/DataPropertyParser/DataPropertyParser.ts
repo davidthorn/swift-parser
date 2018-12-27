@@ -1,5 +1,5 @@
 
-import { RawAccessControl } from '../AccessControl';
+import { RawAccessControl } from '../AccessLevel';
 import { RawVariable } from '../Variable';
 import { DataPropertyParsingResult } from './DataPropertyParsingResult';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';

@@ -1,7 +1,7 @@
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataStructureType } from './DataStructureType';
 import { DataStructureMethod } from '../DataStructureMethod';
-import { AccessControlType } from '../AccessControl';
+import { AccessControlType } from '../AccessLevel';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
 
 export class DataStructure implements DataStructureType {

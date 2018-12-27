@@ -6,7 +6,7 @@ import { StructDataStructureTypeName } from '../DataStructure/implementations/St
 import { DataStructureType } from '../DataStructure/DataStructureType';
 import { DataStructure } from '../DataStructure/DataStructure';
 import { DataStructureParsingResult } from './DataStructureParsingResult';
-import { RawAccessControl } from '../AccessControl';
+import { RawAccessControl } from '../AccessLevel';
 import { parseText } from '../parseLastBracket';
 import { DataPropertyParser } from '../DataPropertyParser/DataPropertyParser';
 

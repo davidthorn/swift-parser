@@ -1,4 +1,4 @@
-import { AccessControlType } from '../AccessControl';
+import { AccessControlType } from '../AccessLevel';
 import { VariableType } from '../Variable';
 import { DataPropertyType as DataPropertyType } from './DataPropertyType';
 

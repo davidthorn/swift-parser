@@ -1,4 +1,4 @@
-import { AccessControlType } from '../AccessControl';
+import { AccessControlType } from '../AccessLevel';
 import { DataStructureMethod } from '../DataStructureMethod';
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
