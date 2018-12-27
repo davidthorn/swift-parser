@@ -32,11 +32,22 @@ d += `
         ${p.accessLevel.name} ${p.arc} ${p.variableType.name} ${p.name}: ${p.type} = "${p.value}"
 ` 
 })
+
+cl.methods.forEach(p => {
+    d += `        
+        ${p.accessLevel.name} func ${p.methodName} (${p.parameters.join(',')}) {
+            ${p.inner}
+        }
+            
+    ` 
+    })
+
 d += `
     }
 ` 
 })
 
+console.log(classes)
 console.log(d)
 
 

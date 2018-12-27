@@ -1,5 +1,5 @@
 import { AccessLevelType } from '../AccessLevel';
-import { DataStructureMethod } from '../DataStructureMethod';
+import { DataMethodType } from '../DataMethodType';
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
 
@@ -8,5 +8,5 @@ export interface DataStructureType {
     AccessLevel: AccessLevelType
     name: string | undefined
     properties: DataPropertyType[]
-    methods: DataStructureMethod[]
+    methods: DataMethodType[]
 }

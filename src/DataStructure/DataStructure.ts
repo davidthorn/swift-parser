@@ -1,6 +1,6 @@
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataStructureType } from './DataStructureType';
-import { DataStructureMethod } from '../DataStructureMethod';
+import { DataMethodType } from '../DataMethodType';
 import { AccessLevelType } from '../AccessLevel';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
 
@@ -10,7 +10,7 @@ export class DataStructure implements DataStructureType {
     AccessLevel: AccessLevelType
     name: string
     properties: DataPropertyType[]
-    methods: DataStructureMethod[]
+    methods: DataMethodType[]
 
     public constructor(name: string , type: DataStructureTypeName , AccessLevel: AccessLevelType ) {
         this.name = name

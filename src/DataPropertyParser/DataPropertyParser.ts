@@ -4,13 +4,18 @@ import { RawVariable } from '../Variable';
 import { DataPropertyParsingResult } from './DataPropertyParsingResult';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
 import { DataProperty } from '../DataProperty/DataProperty';
+import { DataParser } from '../DataParser';
 
-export class DataPropertyParser {
+export class DataPropertyParser extends DataParser {
 
     regexp: RegExp = /(public|internal|private|fileprivate)?\s*(weak|unowned)?\s*(var|let){1}\s+([\w\d]+)\s*:\s+([\w\d]+)\s*=\s*\"?([\w\d]+)"?;?{?/
     completed: boolean = false
     started:  boolean = false
     
+    public constructor() {
+        super()
+    }
+
     /**
      * Checks if the property Identifier provided is valid and if not throws an error
      *
@@ -34,12 +39,12 @@ export class DataPropertyParser {
      * @returns {DataStructureProperty[]}
      * @memberof RawProperty
      */
-    public parse(lines: string[]): DataPropertyType[] {
+    public parse(lines: string[]): { unusedLines: string[] , properties: DataPropertyType[] }{
         
         let properties: DataPropertyType[] = []
 
         let tmpLines = lines
-
+        let unusedLines: string[] = []
         while(tmpLines.length > 0) {
             try {
                 let result = this.parseProperty(tmpLines)
@@ -49,11 +54,16 @@ export class DataPropertyParser {
                 if(property === undefined) throw new Error('jump to next line')
                 properties.push(property)
             } catch {
-                tmpLines.shift() /// could not parse that line
+                let line = tmpLines.shift()
+                if(line !== undefined) 
+                unusedLines.push(line) /// could not parse that line
             }
         }
-
-        return properties
+        
+        return {
+            properties,
+            unusedLines
+        }
     }
     
     /**

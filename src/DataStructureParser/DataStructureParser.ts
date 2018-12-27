@@ -7,8 +7,9 @@ import { DataStructureType } from '../DataStructure/DataStructureType';
 import { DataStructure } from '../DataStructure/DataStructure';
 import { DataStructureParsingResult } from './DataStructureParsingResult';
 import { RawAccessLevel } from '../AccessLevel';
-import { parseText } from '../parseLastBracket';
 import { DataPropertyParser } from '../DataPropertyParser/DataPropertyParser';
+import { DataParser } from '../DataParser';
+import { DataMethodParser } from '../DataMethodParser/DataMethodParser';
 
 
 export const getStructureType = (structure: string | undefined | null): DataStructureTypeName=> {
@@ -23,7 +24,7 @@ export const getStructureType = (structure: string | undefined | null): DataStru
     }
 }
 
-export class DataStructureParser {
+export class DataStructureParser extends DataParser {
 
     regexp: RegExp = /(public|private|internal)?\s*(class|struct|protocol|enum)\s+([\w\d]+)\s+{$/
     completed: boolean = false
@@ -31,7 +32,9 @@ export class DataStructureParser {
     inner: string = ""
     structure?: DataStructureType
 
-    public constructor() { }
+    public constructor() { 
+        super()
+    }
 
     public parse(lines: string[]): DataStructureParsingResult {
         const line = lines.length > 0 ? lines[0] : undefined
@@ -55,27 +58,17 @@ export class DataStructureParser {
         this.inner = inner;
         
         const propertyParser = new DataPropertyParser()
-        let properties = propertyParser.parse(newLines);
+        const { properties , unusedLines } = propertyParser.parse(newLines);
         this.structure.properties = this.structure.properties.concat(properties);
         
+        const methodParser = new DataMethodParser()
+        let methods = methodParser.parse(unusedLines)
+        this.structure.methods = this.structure.methods.concat(methods)
+
         return {
             property: this.structure,
             remainingLines: remainingLines
         };
     }
-
-    getParseResult(lines: string[]): { remainingLines: string[] , newLines: string[] , inner: string } {
-        const result = parseText(lines.join('\n'));
-        return {
-            newLines: this.trimLines(result.closed),
-            remainingLines: this.trimLines(result.remaining),
-            inner: result.closed
-        }
-    }
-
-    trimLines(lines: string): string[] {
-        return lines.split('\n').filter(l => {
-            return (l.trim() !== '\n') ? l.trim() : undefined
-        })
-    }
+    
 }
