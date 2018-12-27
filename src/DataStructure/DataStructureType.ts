@@ -1,5 +1,5 @@
 import { AccessLevelType } from '../AccessLevel';
-import { DataMethodType } from '../DataMethodType';
+import { DataMethodType } from '../DataMethod/DataMethodType';
 import { DataStructureTypeName} from './DataStructureTypeName';
 import { DataPropertyType } from '../DataProperty/DataPropertyType';
 

@@ -1,4 +1,4 @@
-import { AccessLevelType } from './AccessLevel';
+import { AccessLevelType } from '../AccessLevel';
 export interface DataMethodType {
     accessLevel: AccessLevelType;
     methodName: string;

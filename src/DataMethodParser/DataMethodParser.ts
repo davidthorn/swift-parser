@@ -1,8 +1,8 @@
 import { DataParser } from "../DataParser";
 import { DataMethodParsingResult } from "./DataMethodParsingResult";
 import { RawAccessLevel } from "../AccessLevel";
-import { DataMethod } from "../DataMethod";
-import { DataMethodType } from "../DataMethodType";
+import { DataMethod } from "../DataMethod/DataMethod";
+import { DataMethodType } from "../DataMethod/DataMethodType";
 
 export class DataMethodParser extends DataParser {
 

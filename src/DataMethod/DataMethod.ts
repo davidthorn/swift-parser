@@ -1,4 +1,4 @@
-import { AccessLevelType } from './AccessLevel';
+import { AccessLevelType } from '../AccessLevel';
 import { DataMethodType } from './DataMethodType';
 
 export class DataMethod implements DataMethodType {
