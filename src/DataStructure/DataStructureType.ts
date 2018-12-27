@@ -9,7 +9,4 @@ export interface DataStructureType {
     name: string | undefined
     properties: DataStructureProperty[]
     methods: DataStructureMethod[]
-    completed: boolean
-    started: boolean
-    inner: string
 }
