@@ -4,7 +4,18 @@ import { RawAccessLevel } from "../AccessLevel";
 import { DataMethod } from "../DataMethod/DataMethod";
 import { DataMethodType } from "../DataMethod/DataMethodType";
 
+export type DataMethodInfo = { 
+    outlet?: string ,  
+    access_level?: string , 
+    params?: string[], 
+    methodName?: string,
+    returnValue?: string,
+    paramsString?: string
+}
+
 export class DataMethodParser extends DataParser {
+
+    
 
     /// 0 : "Matched string"
     /// 1 : (\@IBAction)?
@@ -15,6 +26,7 @@ export class DataMethodParser extends DataParser {
     /// 6: ([.\s\w\W\S\n]*)
     //regexp: RegExp = /(IBAction)?\s*(public|internal|private|open|)?\s*(func)\s*([\w\d]+)\s?\(([\w\d: _,\s \?=]*)\)\s*{([.\s\w\W\S\n]*)/
     regexp: RegExp = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
+    paramsRegexp: RegExp = /\(\s*([\w\d]+\s*[\w\d]+\s*:\s*[^,]+)\s*,?\)/
     //regexp: /(public|internal|private|fileprivate)?\s*(func)\s+([\w\d]+)\s*/,
     completed: boolean = false
     started: boolean = false
@@ -75,5 +87,41 @@ export class DataMethodParser extends DataParser {
         if(search === undefined|| search === null) throw new Error('No match was found for this line')
         return search
     } 
+
+    /**
+     * Should extract all method arguments / parameters contained within brackets
+     * The format of the search string should follow the synthax guide lines of swift 2+
+     *
+     * @param {string} search
+     * @returns {string[]}
+     * @memberof DataMethodParser
+     */
+    extractParamsFromString(search: string): string[] {
+        const reg =  /\(([\w\W\s]+)\)\s*(->)?\s*([\w\d]*)\s*{/
+        const paramsResult = search.match(reg)
+        return paramsResult === null ? [] : paramsResult[1].split(',').map(f => { return f.trim() })
+    }
+
+    extractMethodInformationFromString(search: string): { remainingString: string, data: DataMethodInfo } {
+
+        const reg = /\s*(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
+        const result: RegExpMatchArray | null = search.match(reg)
+        if(result === null) return {
+            remainingString: search,
+            data: {}
+        }
+
+        return {
+            remainingString: result[5],
+            data: {
+                outlet: result[1].length > 0 ? result[1] : undefined,
+                access_level: result[2].length > 0 ? result[2] : undefined,
+                methodName: result[4],
+                params: this.extractParamsFromString(result[5]),
+                paramsString: result[5]
+            }
+        }
+    
+    }
 
 }

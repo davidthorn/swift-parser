@@ -5,6 +5,18 @@ import { expect } from 'chai'
 @suite('Data Method Parser')
 class DataMethodParserUnitTest extends DataMethodParser {
 
+    mockData(options?: { outlet?: string ,  access_level?: string , params?: string[], methodName?: string }): string[] {
+        const opts = options === undefined ? {} : options 
+        const outlet = opts.outlet === undefined ? '' : `${opts.outlet} `
+        const access_level = opts.access_level === undefined ? '' : `${opts.access_level} `
+        const methodName = opts.methodName === undefined ? 'testFun' : `${opts.methodName}`
+        const params = opts.params === undefined ? [] : opts.params
+        const data = `${outlet}${access_level}func ${methodName}(${params.join(',')}) -> String {
+            print("this is happening here")
+        } 
+        `
+        return this.trimLines(data)
+    }
 
     @test "that this throwIfMatchNotFound Throws an error with invalid data" () {
 
@@ -87,7 +99,7 @@ class DataMethodParserUnitTest extends DataMethodParser {
 
     @test "retrieving all func declaration data" () {
 
-        const reg = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
+        const reg = this.regexp
         const data = (access_level: string) => {
             return `@IBAction ${access_level} func testFun(_ name: String , _ surname: String? = nil ) {
                 print("this is happening here")
@@ -96,11 +108,10 @@ class DataMethodParserUnitTest extends DataMethodParser {
         }
 
         let lines = this.trimLines(data('internal'))
-        const result: RegExpMatchArray | null = lines[0].match(reg)
-        expect(reg).to.not.null
+        const result: RegExpMatchArray | null = lines[0].match(this.regexp)
+        expect(result).to.not.null
         if(result === null) throw new Error()
-       
-        console.log(result)
+        
         expect(result[1]).to.equal('@IBAction')
         expect(result[2]).to.equal('internal')
         expect(result[3]).to.equal('func')
@@ -110,5 +121,131 @@ class DataMethodParserUnitTest extends DataMethodParser {
 
 
     }
+
+    @test "extract params ( _ name: String , _ surname: String? = nil )" () {
+
+        let mockParams = ['_ name: String' , '_ surname: String? = nil']
+        let lines = this.mockData({params: mockParams })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        const params = this.extractParamsFromString(remainingString)
+        expect(params.length).to.equal(2)
+        expect(params[0]).to.equal('_ name: String')
+        expect(params[1]).to.equal('_ surname: String? = nil')
+    }
+
+    @test "extract params ( _ name: String , _ surname: String? = nil , completion: (( _ name: String) -> Void)? = nil )" () {
+ 
+        let mockParams = ['_ name: String' , '_ surname: String? = nil', 'completion: (( _ name: String) -> Void)? = nil']
+        let lines = this.mockData({params: mockParams })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        const params = this.extractParamsFromString(remainingString)
+        expect(params.length).to.equal(3)
+        expect(params[0]).to.equal('_ name: String')
+        expect(params[1]).to.equal('_ surname: String? = nil')
+        expect(params[2]).to.equal('completion: (( _ name: String) -> Void)? = nil')
+    }
+
+    @test 'paramsRegexp with func testFun(_ name: String , _ surname: String? = nil )' () {
+
+        let options = { 
+            params: ['_ name: String', '_ surname: String? = nil'] }
+        let lines = this.mockData(options)
+        
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(data.params[1]).to.equal('_ surname: String? = nil')
+        expect(remainingString).to.equal(line.replace('func testFun' , ''))
+
+    } 
+
+    @test 'extractMethodInformationFromString returns the method data for func testFun()' () {
+        let lines = this.mockData()
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.outlet).to.be.undefined
+        expect(data.access_level).to.be.undefined
+        expect(data.methodName).to.equal('testFun')
+        expect(remainingString).to.equal(line.replace('func testFun' , ''))
+    }
+
+    @test 'extractMethodInformationFromString returns the method data for func testFun(_ name: String)' () {
+        let lines = this.mockData({ params: ['_ name: String'] })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.outlet).to.be.undefined
+        expect(data.access_level).to.be.undefined
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(remainingString).to.equal(line.replace('func testFun' , ''))
+    }
+
+    @test 'extractMethodInformationFromString returns the method data for func testFun(_ name: String , _ surname: String? = nil )' () {
+        let lines = this.mockData({ params: ['_ name: String', '_ surname: String? = nil'] })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.outlet).to.be.undefined
+        expect(data.access_level).to.be.undefined
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(data.params[1]).to.equal('_ surname: String? = nil')
+        expect(remainingString).to.equal(line.replace('func testFun' , ''))
+    } 
+
+    @test 'extractMethodInformationFromString returns the method data for @IBAction func testFun(_ name: String , _ surname: String? = nil )' () {
+        let lines = this.mockData({ outlet: '@IBAction', params: ['_ name: String', '_ surname: String? = nil'] })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.outlet).to.equal('@IBAction')
+        expect(data.access_level).to.be.undefined
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(data.params[1]).to.equal('_ surname: String? = nil')
+        expect(remainingString).to.equal(line.replace('@IBAction func testFun' , ''))
+    } 
+
+    @test 'extractMethodInformationFromString returns the method data for ${access_level} func testFun(_ name: String , _ surname: String? = nil )' () {
+        let lines = this.mockData({ access_level: 'internal', params: ['_ name: String', '_ surname: String? = nil'] })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.access_level).to.equal('internal')
+        expect(data.outlet).to.be.undefined
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(data.params[1]).to.equal('_ surname: String? = nil')
+        expect(remainingString).to.equal(line.replace('internal func testFun' , ''))
+    } 
+
+    @test 'extractMethodInformationFromString returns the method data for @IBAction ${access_level} func testFun(_ name: String , _ surname: String? = nil )' () {
+        let options = { 
+            outlet: '@IBAction',
+            access_level: 'internal', 
+            params: ['_ name: String', '_ surname: String? = nil'] }
+        let lines = this.mockData(options)
+        
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        expect(data.access_level).to.equal('internal')
+        expect(data.outlet).to.equal('@IBAction')
+        expect(data.methodName).to.equal('testFun')
+        expect(data.params).to.not.be.undefined
+        if(data.params === undefined) throw new Error()
+        expect(data.params[0]).to.equal('_ name: String')
+        expect(data.params[1]).to.equal('_ surname: String? = nil')
+        expect(remainingString).to.equal(line.replace('@IBAction internal func testFun' , ''))
+    } 
 
 }
