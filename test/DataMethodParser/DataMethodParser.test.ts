@@ -128,7 +128,7 @@ class DataMethodParserUnitTest extends DataMethodParser {
         let lines = this.mockData({params: mockParams })
         let line = lines.join('\n')
         const { remainingString , data } = this.extractMethodInformationFromString(line)
-        const params = this.extractParamsFromString(remainingString)
+        const { params } = this.extractParamsFromString(remainingString)
         expect(params.length).to.equal(2)
         expect(params[0]).to.equal('_ name: String')
         expect(params[1]).to.equal('_ surname: String? = nil')
@@ -140,29 +140,16 @@ class DataMethodParserUnitTest extends DataMethodParser {
         let lines = this.mockData({params: mockParams })
         let line = lines.join('\n')
         const { remainingString , data } = this.extractMethodInformationFromString(line)
-        const params = this.extractParamsFromString(remainingString)
+        const { params } = this.extractParamsFromString(remainingString)
         expect(params.length).to.equal(3)
         expect(params[0]).to.equal('_ name: String')
         expect(params[1]).to.equal('_ surname: String? = nil')
         expect(params[2]).to.equal('completion: (( _ name: String) -> Void)? = nil')
     }
 
-    @test 'paramsRegexp with func testFun(_ name: String , _ surname: String? = nil )' () {
+    @test 'extract return value from method' () {
 
-        let options = { 
-            params: ['_ name: String', '_ surname: String? = nil'] }
-        let lines = this.mockData(options)
-        
-        let line = lines.join('\n')
-        const { remainingString , data } = this.extractMethodInformationFromString(line)
-        expect(data.methodName).to.equal('testFun')
-        expect(data.params).to.not.be.undefined
-        if(data.params === undefined) throw new Error()
-        expect(data.params[0]).to.equal('_ name: String')
-        expect(data.params[1]).to.equal('_ surname: String? = nil')
-        expect(remainingString).to.equal(line.replace('func testFun' , ''))
-
-    } 
+    }
 
     @test 'extractMethodInformationFromString returns the method data for func testFun()' () {
         let lines = this.mockData()

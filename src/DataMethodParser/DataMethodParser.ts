@@ -96,10 +96,15 @@ export class DataMethodParser extends DataParser {
      * @returns {string[]}
      * @memberof DataMethodParser
      */
-    extractParamsFromString(search: string): string[] {
-        const reg =  /\(([\w\W\s]+)\)\s*(->)?\s*([\w\d]*)\s*{/
+    extractParamsFromString(search: string): { params: string[] , remainingString?: string  } {
+        const reg =  /\(([\w\W\s]+)\)(\s*->?\s*[\w\d]*\s*{)/
         const paramsResult = search.match(reg)
-        return paramsResult === null ? [] : paramsResult[1].split(',').map(f => { return f.trim() })
+        const remainingString = paramsResult === null ? undefined : paramsResult[2]
+        const params = paramsResult === null ? [] : paramsResult[1].split(',').map(f => { return f.trim() })
+        return {
+            params,
+            remainingString
+        }
     }
 
     extractMethodInformationFromString(search: string): { remainingString: string, data: DataMethodInfo } {
@@ -111,17 +116,21 @@ export class DataMethodParser extends DataParser {
             data: {}
         }
 
+        const { params , remainingString } = this.extractParamsFromString(result[5])
+
         return {
             remainingString: result[5],
             data: {
                 outlet: result[1].length > 0 ? result[1] : undefined,
                 access_level: result[2].length > 0 ? result[2] : undefined,
                 methodName: result[4],
-                params: this.extractParamsFromString(result[5]),
+                params: params,
                 paramsString: result[5]
             }
         }
     
     }
+
+    
 
 }

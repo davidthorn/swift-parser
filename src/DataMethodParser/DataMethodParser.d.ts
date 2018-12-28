@@ -27,7 +27,10 @@ export declare class DataMethodParser extends DataParser {
      * @returns {string[]}
      * @memberof DataMethodParser
      */
-    extractParamsFromString(search: string): string[];
+    extractParamsFromString(search: string): {
+        params: string[];
+        remainingString?: string;
+    };
     extractMethodInformationFromString(search: string): {
         remainingString: string;
         data: DataMethodInfo;
