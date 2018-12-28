@@ -85,27 +85,30 @@ class DataMethodParserUnitTest extends DataMethodParser {
 
     }
 
-    @test "that an unknown access level causes the acces_level match property to be undefined" () {
+    @test "retrieving all func declaration data" () {
+
+        const reg = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
         const data = (access_level: string) => {
-            return `  IBAction ${access_level} func testFun(_ name: String , _ surname: String? = nil ) {
+            return `@IBAction ${access_level} func testFun(_ name: String , _ surname: String? = nil ) {
                 print("this is happening here")
-            }
+            } 
             `
-            
         }
 
-        let lines = this.trimLines(data('unknown'))
-        const reg: RegExpMatchArray | null = lines[0].match(this.regexp)
+        let lines = this.trimLines(data('internal'))
+        const result: RegExpMatchArray | null = lines[0].match(reg)
         expect(reg).to.not.null
-        if(reg === null) throw new Error()
+        if(result === null) throw new Error()
        
-        expect(reg[1]).to.equal('@IBAction')
-        expect(reg[2]).to.be.undefined
-        expect(reg[3]).to.equal('func')
-        expect(reg[4]).to.equal('testFun')
-        expect(reg[5]).to.equal('_ name: String , _ surname: String? = nil ')
-        expect(reg.length).to.equal(7)
-        
+        console.log(result)
+        expect(result[1]).to.equal('@IBAction')
+        expect(result[2]).to.equal('internal')
+        expect(result[3]).to.equal('func')
+        expect(result[4]).to.equal('testFun')
+        expect(result[5]).to.equal('(_ name: String , _ surname: String? = nil ) {')
+        expect(this.regexp.source).to.equal(reg.source)
+
+
     }
 
 }

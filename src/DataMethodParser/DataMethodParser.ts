@@ -13,7 +13,8 @@ export class DataMethodParser extends DataParser {
     /// 4 : ([\w\d]+) 
     /// 5 : ([\w\d: _,\s \?=]*)
     /// 6: ([.\s\w\W\S\n]*)
-    regexp: RegExp = /(IBAction)?\s*(public|internal|private|open|)?\s*(func)\s*([\w\d]+)\s?\(([\w\d: _,\s \?=]*)\)\s*{([.\s\w\W\S\n]*)/
+    //regexp: RegExp = /(IBAction)?\s*(public|internal|private|open|)?\s*(func)\s*([\w\d]+)\s?\(([\w\d: _,\s \?=]*)\)\s*{([.\s\w\W\S\n]*)/
+    regexp: RegExp = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
     //regexp: /(public|internal|private|fileprivate)?\s*(func)\s+([\w\d]+)\s*/,
     completed: boolean = false
     started: boolean = false
