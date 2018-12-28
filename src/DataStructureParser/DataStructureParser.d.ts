@@ -17,6 +17,18 @@ export declare class DataStructureParser extends DataParser {
     structure?: DataStructureType;
     constructor();
     parse(lines: string[]): DataStructureParsingResult;
+    /**
+     * This method will reduce the lines provided into a string and then search from the beginning for a data structure
+     * if none is directly found then the method will return the remaining lines to be the original string
+     *
+     * All information about the data structure will be present within the info property
+     * All data which has been found within the data strucuture open and closing {} will be saved in the inner property.
+     * All data which is found afer the closing bracket of the data structure will then be saved to remainingLines string
+      *
+     * @param {string[]} lines
+     * @returns {{ remainingLines?: string , inner?: string , info?: { access_level: AccessLevelType , type: DataStructureTypeName , name: string } }}
+     * @memberof DataStructureParser
+     */
     extractStructInfo(lines: string[]): {
         remainingLines?: string;
         inner?: string;

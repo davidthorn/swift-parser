@@ -7,6 +7,6 @@
         "**/*-lock.json": true,
         "**/*.d.ts": true,
         "**/*.js.map": true,
-        "**/*.jsc": true
+        "**/*.jss": true
     }
 }

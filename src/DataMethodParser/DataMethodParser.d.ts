@@ -1,5 +1,4 @@
 import { DataParser } from "../DataParser";
-import { DataMethodParsingResult } from "./DataMethodParsingResult";
 import { DataMethodType } from "../DataMethod/DataMethodType";
 export declare type DataMethodInfo = {
     outlet?: string;
@@ -10,7 +9,8 @@ export declare type DataMethodInfo = {
     paramsString?: string;
 };
 export declare class DataMethodParser extends DataParser {
-    regexp: RegExp;
+    globalMethodRegExp: RegExp;
+    structureMethodRegExp: RegExp;
     paramsRegexp: RegExp;
     completed: boolean;
     started: boolean;
@@ -25,7 +25,31 @@ export declare class DataMethodParser extends DataParser {
      * @returns {DataMethodParsingResult}
      * @memberof DataMethodParser
      */
-    parseMethod(lines: string[]): DataMethodParsingResult;
+    parseStructureMethod(lines: string[]): {
+        remainingLines: string[];
+        method?: DataMethodType;
+    };
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     *
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
+    parseGlobalMethod(lines: string[]): {
+        remainingLines: string[];
+        method?: DataMethodType;
+    };
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     *
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
+    private parseMethod;
     throwIfMatchNotFound(line: string): RegExpMatchArray;
     extractMethodParams(search: string): {
         params: string[];

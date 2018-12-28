@@ -1,13 +1,7 @@
 /// <reference path="../../node_modules/mocha-typescript/globals.d.ts"/>
 import { expect } from 'chai' 
 import { DataStructureParser } from '../../src/DataStructureParser/DataStructureParser';
-import { AccessLevelType, InternalAccessLevel,accessLevel,  PrivateAccessLevel, FilePrivateAccessLevel, OpenAccessLevel, PublicAccessLevel } from '../../src/AccessLevel';
-import { DataStructureTypeName } from '../../src/DataStructure/DataStructureTypeName';
-import { ClassDataStructureTypeName } from '../../src/DataStructure/implementations/ClassDataStructureTypeName';
-import { DataMethod } from '../../src/DataMethod/DataMethod';
-import { StructDataStructureTypeName } from '../../src/DataStructure/implementations/StructDataStructureTypeName';
-import { ProtocolDataStructureTypeName } from '../../src/DataStructure/implementations/ProtocolDataStructure';
-import { EnumDataStructureTypeName } from '../../src/DataStructure/implementations/EnumDataStructureTypeName';
+import { accessLevel } from '../../src/AccessLevel';
 import { structureTypeName } from '../../src/DataStructure/DataStructureType';
 
 @suite('DataStructureParser - extractStructInfo')
@@ -103,7 +97,6 @@ export class DataStructureParserUnitTest extends DataStructureParser {
         expect(structure.remainingLines).to.not.be.undefined
         if(structure.remainingLines === undefined) throw new Error('this should not be undefined')
         const structure1 = this.extractStructInfo(structure.remainingLines.split('\n'))
-        // console.log(structure.remainingLines)
         expect(structure1.info).to.not.be.undefined
         if(structure1.info === undefined) throw new Error('it cannot be undefined')
         const { access_level , type , name  } = structure1.info

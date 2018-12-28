@@ -65,6 +65,8 @@ export class DataParser {
      * @memberof DataParser
      */
     trimLines(lines: string): string[] {
-       return this.trimEmptyLines(lines)
+       return this.trimEmptyLines(lines).map(l => { return l.trim() })
     }
+
+
 }

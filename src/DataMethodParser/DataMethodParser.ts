@@ -1,9 +1,7 @@
 import { DataParser } from "../DataParser";
-import { DataMethodParsingResult } from "./DataMethodParsingResult";
-import { RawAccessLevel } from "../AccessLevel";
+import { accessLevel } from "../AccessLevel";
 import { DataMethod } from "../DataMethod/DataMethod";
 import { DataMethodType } from "../DataMethod/DataMethodType";
-import { stringify } from "querystring";
 import { searchForClosingBracket } from "../parseLastBracket";
 
 export type DataMethodInfo = { 
@@ -17,15 +15,10 @@ export type DataMethodInfo = {
 
 export class DataMethodParser extends DataParser {
 
-    /// 0 : "Matched string"
-    /// 1 : (\@IBAction)?
-    /// 2 : (public|internal|private|open)?
-    /// 3 : (func)
-    /// 4 : ([\w\d]+) 
-    /// 5 : ([\w\d: _,\s \?=]*)
-    /// 6: ([.\s\w\W\S\n]*)
     //regexp: RegExp = /(IBAction)?\s*(public|internal|private|open|)?\s*(func)\s*([\w\d]+)\s?\(([\w\d: _,\s \?=]*)\)\s*{([.\s\w\W\S\n]*)/
-    regexp: RegExp = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
+    globalMethodRegExp: RegExp = /(@IB[\w]+|)(?=\s*(public|private|internal|open|fileprivate|)(?=\s*(func(?=\s+([\w]+(?=\s*([\w\s\W\d]*)))))))/
+    structureMethodRegExp: RegExp = new RegExp(`^${this.globalMethodRegExp.source}`)
+    
     paramsRegexp: RegExp = /\(\s*([\w\d]+\s*[\w\d]+\s*:\s*[^,]+)\s*,?\)/
     //regexp: /(public|internal|private|fileprivate)?\s*(func)\s+([\w\d]+)\s*/,
     completed: boolean = false
@@ -44,12 +37,11 @@ export class DataMethodParser extends DataParser {
 
         while(tmpLines.length > 0) {
             try {
-                let result = this.parseMethod(tmpLines)
-                const { remainingLines , property , error } = result
+                let result = this.parseStructureMethod(tmpLines)
+                const { remainingLines , method } = result
                 tmpLines = remainingLines
-                if(error !== undefined) throw error
-                if(property === undefined) throw new Error('jump to next line')
-                methods.push(property)
+                if(method === undefined) throw new Error('jump to next line')
+                methods.push(method)
             } catch {
                 tmpLines.shift() /// could not parse that line
             }
@@ -66,32 +58,66 @@ export class DataMethodParser extends DataParser {
      * @returns {DataMethodParsingResult}
      * @memberof DataMethodParser
      */
-    public parseMethod(lines: string[]): DataMethodParsingResult {
-        const line = lines.shift()
-        if(line === undefined || line === null) return { remainingLines: lines , error: new Error('the line cannot be null') }
-        const search = line.match(this.regexp)
-        if(search === null || search === undefined) return { remainingLines: lines, error: new Error('no match found for a line') }
+    public parseStructureMethod(lines: string[]): { remainingLines: string[] , method?: DataMethodType } {
+        return this.parseMethod(this.structureMethodRegExp , lines)
+    }
+
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     * 
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
+    public parseGlobalMethod(lines: string[]): { remainingLines: string[] , method?: DataMethodType } {
+        return this.parseMethod(this.globalMethodRegExp , lines)
+    }
+
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     * 
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
+    private parseMethod(regexp: RegExp , lines: string[]): { remainingLines: string[] , method?: DataMethodType } {
         
-        const accessLevel = RawAccessLevel.parse(search[2])
+        const line = lines.join('\n').trim()
+        if(line === undefined || line === null)  {
+            return { remainingLines: lines }
+        }
+         
+        const search = line.match(regexp)
+        
+        if(search === null || search === undefined) {
+            return { remainingLines: lines   }
+        }
+        console.log(search.index)
+        const access_level = accessLevel(search[2])
         const methodName = search[4]
         
-        const dataMethod = new DataMethod(methodName , accessLevel , [])
+        const dataMethod = new DataMethod(methodName , access_level , [])
+        let end = search[5].split('\n')
+        const { params, remainingString  } = this.extractMethodParams(search[5])
+        dataMethod.parameters = dataMethod.parameters.concat(params)
 
-        let end = search[6].split('\n').concat(lines)
-
-        const { inner , remainingLines } = this.getParseResult(end)
+        const { inner , remainingLines } = this.getMethodBody(remainingString.split('\n'))
         
         dataMethod.inner = inner
         
+        const ignoredLines = line.substring(0, search.index).split('\n')
+       
         return {
-            remainingLines: remainingLines,
-            property: dataMethod
+            remainingLines: ignoredLines.concat(remainingLines),
+            method: dataMethod
         }
-    }
+    } 
 
     throwIfMatchNotFound(line: string): RegExpMatchArray {
         if(line === undefined || line === null) new Error('The line is undefined or null')
-        const search = line.trim().match(this.regexp)
+        const search = line.trim().match(this.structureMethodRegExp)
         if(search === undefined|| search === null) throw new Error('No match was found for this line')
         return search
     } 

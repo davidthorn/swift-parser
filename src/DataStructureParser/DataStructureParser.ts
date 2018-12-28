@@ -15,15 +15,6 @@ export type DataStructureInfo  = {
 
 export const getStructureType = (structure: string | undefined | null): DataStructureTypeName => {
     return structureTypeName(structure || '')
-    // if (structure === undefined || structure === null) throw new Error('The structure cannot be null or undefined it must be either class|struct|enum|protocol')
-    // switch (structure) {
-    //     case "struct": return new StructDataStructureTypeName()
-    //     case "class": return new ClassDataStructureTypeName()
-    //     case "enum": return new EnumDataStructureTypeName()
-    //     case "protocol": return new ProtocolDataStructureTypeName()
-    //     default:
-    //         throw new Error('The structure cannot be null or undefined it must be either class|struct|enum|protocol')
-    // }
 }
 
 export class DataStructureParser extends DataParser {
@@ -73,6 +64,18 @@ export class DataStructureParser extends DataParser {
         };
     }
 
+    /**
+     * This method will reduce the lines provided into a string and then search from the beginning for a data structure
+     * if none is directly found then the method will return the remaining lines to be the original string
+     * 
+     * All information about the data structure will be present within the info property
+     * All data which has been found within the data strucuture open and closing {} will be saved in the inner property.
+     * All data which is found afer the closing bracket of the data structure will then be saved to remainingLines string
+      *
+     * @param {string[]} lines
+     * @returns {{ remainingLines?: string , inner?: string , info?: { access_level: AccessLevelType , type: DataStructureTypeName , name: string } }}
+     * @memberof DataStructureParser
+     */
     extractStructInfo(lines: string[]): { remainingLines?: string , inner?: string , info?: { access_level: AccessLevelType , type: DataStructureTypeName , name: string } } {
         
         /// place lines into a single line so that we can retrieve the class body without having to iterate through lines
@@ -128,7 +131,5 @@ export class DataStructureParser extends DataParser {
             name: name
         }
     }
-
-    
 
 }

@@ -40,23 +40,6 @@ class DataMethodParserUnitTest extends DataMethodParser {
             parsablLine = method1Body.remainingString
             methods.push(methodData)
         }
-
-        
-
-
-        // const methodData1 = this.extractMethodInformationFromString(mathod1Body.remainingString)
-        // const paramsData1 = this.extractMethodParams(methodData1.remainingString)
-        
-        // const mathod2Body = this.extractBodyFromString(paramsData1.remainingString)
-
-        // methods.push(methodData)
-        // parsablLine = remainingString
-   
-        
-        
-
-        
-
     }
 
 
