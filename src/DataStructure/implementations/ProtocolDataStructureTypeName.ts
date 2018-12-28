@@ -1,4 +1,4 @@
 import { DataStructureTypeName} from '../DataStructureTypeName';
-export class ProtocolDataStructure implements DataStructureTypeName{
+export class ProtocolDataStructureTypeName implements DataStructureTypeName{
     name: string = "protocol";
 }

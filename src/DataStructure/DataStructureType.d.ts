@@ -9,3 +9,4 @@ export interface DataStructureType {
     properties: DataPropertyType[];
     methods: DataMethodType[];
 }
+export declare const structureTypeName: (type?: string | undefined) => DataStructureTypeName;

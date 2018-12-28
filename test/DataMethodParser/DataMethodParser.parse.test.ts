@@ -51,7 +51,7 @@ class DataMethodParserUnitTest extends DataMethodParser {
 
         // methods.push(methodData)
         // parsablLine = remainingString
-        console.log(methods)
+   
         
         
 

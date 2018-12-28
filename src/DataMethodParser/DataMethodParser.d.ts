@@ -17,6 +17,14 @@ export declare class DataMethodParser extends DataParser {
     inner: string;
     constructor();
     parse(lines: string[]): DataMethodType[];
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     *
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
     parseMethod(lines: string[]): DataMethodParsingResult;
     throwIfMatchNotFound(line: string): RegExpMatchArray;
     extractMethodParams(search: string): {

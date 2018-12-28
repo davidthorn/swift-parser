@@ -19,6 +19,7 @@ export declare class FilePrivateAccessLevel implements AccessLevelType {
 export declare class OpenAccessLevel implements AccessLevelType {
     name: string;
 }
+export declare const accessLevel: (name?: string | undefined) => AccessLevelType;
 export declare class RawAccessLevel {
     /**
      * Parses the access string provided into a AccessLevelType

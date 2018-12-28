@@ -26,6 +26,10 @@ export class OpenAccessLevel implements AccessLevelType {
     name: string = "open"
 }
 
+export const accessLevel = (name?: string): AccessLevelType => {
+    return RawAccessLevel.parse(name)
+}
+
 export class RawAccessLevel {
 
     /**

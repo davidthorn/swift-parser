@@ -58,6 +58,14 @@ export class DataMethodParser extends DataParser {
         return methods
     }
 
+    /**
+     * Parses the data line by line attempting to convert the data into a swift method
+     * 
+     *
+     * @param {string[]} lines
+     * @returns {DataMethodParsingResult}
+     * @memberof DataMethodParser
+     */
     public parseMethod(lines: string[]): DataMethodParsingResult {
         const line = lines.shift()
         if(line === undefined || line === null) return { remainingLines: lines , error: new Error('the line cannot be null') }
@@ -71,7 +79,7 @@ export class DataMethodParser extends DataParser {
 
         let end = search[6].split('\n').concat(lines)
 
-        const { inner , remainingLines} = this.getParseResult(end)
+        const { inner , remainingLines } = this.getParseResult(end)
         
         dataMethod.inner = inner
         
