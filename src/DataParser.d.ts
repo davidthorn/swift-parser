@@ -1,19 +1,6 @@
 export declare class DataParser {
     constructor();
     /**
-     * See getMethodBody
-     * Warning newLines
-     *
-     * @param {string[]} lines
-     * @returns {{ remainingLines: string[] , newLines: string[] , inner: string }}
-     * @memberof DataParser
-     */
-    getParseResult(lines: string[]): {
-        remainingLines: string[];
-        newLines: string[];
-        inner: string;
-    };
-    /**
      * Returns the method body for this data provided
      * This method will search for the first { and then keep collecting data until it reaches the matching }
      * all data after the ending } of the statement will then be inserted into the remaining string property

@@ -94,7 +94,7 @@ export class DataMethodParser extends DataParser {
         if(search === null || search === undefined) {
             return { remainingLines: lines   }
         }
-        console.log(search.index)
+        
         const access_level = accessLevel(search[2])
         const methodName = search[4]
         
