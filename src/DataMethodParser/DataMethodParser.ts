@@ -17,8 +17,6 @@ export type DataMethodInfo = {
 
 export class DataMethodParser extends DataParser {
 
-    
-
     /// 0 : "Matched string"
     /// 1 : (\@IBAction)?
     /// 2 : (public|internal|private|open)?
@@ -90,25 +88,6 @@ export class DataMethodParser extends DataParser {
         return search
     } 
 
-    /**
-     * Should extract all method arguments / parameters contained within brackets
-     * The format of the search string should follow the synthax guide lines of swift 2+
-     *
-     * @param {string} search
-     * @returns {string[]}
-     * @memberof DataMethodParser
-     */
-    // extractParamsFromString(search: string): { params: string[] , remainingString?: string  } {
-    //     const reg = /\((\s*[\w\d]*\s*[\w\d]*:?\s*[\w\d]*\s*,?){0,}\)/
-        
-    //     const paramsResult = search.match(reg)
-    //     const paramsString = paramsResult === null ? undefined : paramsResult[1]
-    //     const params = paramsString === undefined ? [] : paramsString.split(',').map(f => { return f.trim() })
-    //     return {
-    //         params
-    //     }
-    // }
-
     extractMethodParams(search: string) : { params: string[] , remainingString: string } {
 
         const { matchedString , remainingString  } = searchForClosingBracket('(' , search)
@@ -143,6 +122,13 @@ export class DataMethodParser extends DataParser {
     
     }
 
+    extractBodyFromString(search: string): { remainingString: string, data: string } {
+        const { remainingString , matchedString } = searchForClosingBracket('{' , search)
+        return {
+            remainingString: remainingString.trim(),
+            data: matchedString || '',
+        }
+    }
     
 
 }

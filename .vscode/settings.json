@@ -6,7 +6,7 @@
         ".vscode": true,
         "**/*-lock.json": true,
         "**/*.d.ts": true,
-        "**/*.js": true,
-        "**/*.js.map": true
+        "**/*.js.map": true,
+        "**/*.jsc": true
     }
 }

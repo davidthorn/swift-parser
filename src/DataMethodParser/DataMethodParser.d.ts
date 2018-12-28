@@ -19,14 +19,6 @@ export declare class DataMethodParser extends DataParser {
     parse(lines: string[]): DataMethodType[];
     parseMethod(lines: string[]): DataMethodParsingResult;
     throwIfMatchNotFound(line: string): RegExpMatchArray;
-    /**
-     * Should extract all method arguments / parameters contained within brackets
-     * The format of the search string should follow the synthax guide lines of swift 2+
-     *
-     * @param {string} search
-     * @returns {string[]}
-     * @memberof DataMethodParser
-     */
     extractMethodParams(search: string): {
         params: string[];
         remainingString: string;
@@ -34,5 +26,9 @@ export declare class DataMethodParser extends DataParser {
     extractMethodInformationFromString(search: string): {
         remainingString: string;
         data: DataMethodInfo;
+    };
+    extractBodyFromString(search: string): {
+        remainingString: string;
+        data: string;
     };
 }

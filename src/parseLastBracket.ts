@@ -8,6 +8,7 @@ export type ParseTextResult = {
 export const searchForClosingBracket = (bracket: '(' | '{' ,  search: string): { matchedString?: string , remainingString: string } => {
     let chars = search.split('')
 
+    let openBracket = bracket === '(' ? '(' : '{'
     let closeBracket = bracket === '(' ? ')' : '}'
 
     type data = {
@@ -35,12 +36,14 @@ export const searchForClosingBracket = (bracket: '(' | '{' ,  search: string): {
         let c = main.closed
 
         switch(current) {
-            case bracket:
+            case openBracket:
                 if(o > c) {
                     m += current
                     o += 1
                 } else if(o === 0 && c === 0) { /// we have found the first bracket
                     o += 1
+                } else if (o === c) {
+                    r += current
                 } else {
                     i += current
                 }
@@ -78,7 +81,7 @@ export const searchForClosingBracket = (bracket: '(' | '{' ,  search: string): {
     }, obj)
    
     return {
-        matchedString: result.matched,
+        matchedString: result.matched.trim(),
         remainingString: result.remaining
     }
 }
