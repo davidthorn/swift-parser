@@ -5,13 +5,14 @@ import { expect } from 'chai'
 @suite('Data Method Parser')
 class DataMethodParserUnitTest extends DataMethodParser {
 
-    mockData(options?: { outlet?: string ,  access_level?: string , params?: string[], methodName?: string }): string[] {
+    mockData(options?: { outlet?: string ,  access_level?: string , params?: string[], methodName?: string , returnValue?: string }): string[] {
         const opts = options === undefined ? {} : options 
         const outlet = opts.outlet === undefined ? '' : `${opts.outlet} `
+        const returnValue = opts.returnValue === undefined ? '' : ` -> ${opts.returnValue} `
         const access_level = opts.access_level === undefined ? '' : `${opts.access_level} `
         const methodName = opts.methodName === undefined ? 'testFun' : `${opts.methodName}`
         const params = opts.params === undefined ? [] : opts.params
-        const data = `${outlet}${access_level}func ${methodName}(${params.join(',')}) -> String {
+        const data = `${outlet}${access_level}func ${methodName}(${params.join(',')})${returnValue}{
             print("this is happening here")
         } 
         `
@@ -92,9 +93,6 @@ class DataMethodParserUnitTest extends DataMethodParser {
         lines = this.trimLines(data('fileprivate'))
         expect( () => {this.throwIfMatchNotFound(lines[0]) } ).to.not.throw()
 
-        // lines = this.trimLines(data('unknown'))
-        // expect( () => {this.throwIfMatchNotFound(lines[0]) } ).to.throw()
-
     }
 
     @test "retrieving all func declaration data" () {
@@ -128,7 +126,7 @@ class DataMethodParserUnitTest extends DataMethodParser {
         let lines = this.mockData({params: mockParams })
         let line = lines.join('\n')
         const { remainingString , data } = this.extractMethodInformationFromString(line)
-        const { params } = this.extractParamsFromString(remainingString)
+        const { params } = this.extractMethodParams(remainingString)
         expect(params.length).to.equal(2)
         expect(params[0]).to.equal('_ name: String')
         expect(params[1]).to.equal('_ surname: String? = nil')
@@ -140,7 +138,7 @@ class DataMethodParserUnitTest extends DataMethodParser {
         let lines = this.mockData({params: mockParams })
         let line = lines.join('\n')
         const { remainingString , data } = this.extractMethodInformationFromString(line)
-        const { params } = this.extractParamsFromString(remainingString)
+        const { params } = this.extractMethodParams(remainingString)
         expect(params.length).to.equal(3)
         expect(params[0]).to.equal('_ name: String')
         expect(params[1]).to.equal('_ surname: String? = nil')
@@ -148,7 +146,12 @@ class DataMethodParserUnitTest extends DataMethodParser {
     }
 
     @test 'extract return value from method' () {
-
+        let lines = this.mockData({returnValue: 'Double' })
+        let line = lines.join('\n')
+        const { remainingString , data } = this.extractMethodInformationFromString(line)
+        const { params } = this.extractMethodParams(remainingString)
+        expect(params.length).to.equal(0)
+        
     }
 
     @test 'extractMethodInformationFromString returns the method data for func testFun()' () {
@@ -158,19 +161,6 @@ class DataMethodParserUnitTest extends DataMethodParser {
         expect(data.outlet).to.be.undefined
         expect(data.access_level).to.be.undefined
         expect(data.methodName).to.equal('testFun')
-        expect(remainingString).to.equal(line.replace('func testFun' , ''))
-    }
-
-    @test 'extractMethodInformationFromString returns the method data for func testFun(_ name: String)' () {
-        let lines = this.mockData({ params: ['_ name: String'] })
-        let line = lines.join('\n')
-        const { remainingString , data } = this.extractMethodInformationFromString(line)
-        expect(data.outlet).to.be.undefined
-        expect(data.access_level).to.be.undefined
-        expect(data.methodName).to.equal('testFun')
-        expect(data.params).to.not.be.undefined
-        if(data.params === undefined) throw new Error()
-        expect(data.params[0]).to.equal('_ name: String')
         expect(remainingString).to.equal(line.replace('func testFun' , ''))
     }
 

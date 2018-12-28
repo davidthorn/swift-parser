@@ -3,6 +3,8 @@ import { DataMethodParsingResult } from "./DataMethodParsingResult";
 import { RawAccessLevel } from "../AccessLevel";
 import { DataMethod } from "../DataMethod/DataMethod";
 import { DataMethodType } from "../DataMethod/DataMethodType";
+import { stringify } from "querystring";
+import { searchForClosingBracket } from "../parseLastBracket";
 
 export type DataMethodInfo = { 
     outlet?: string ,  
@@ -96,13 +98,24 @@ export class DataMethodParser extends DataParser {
      * @returns {string[]}
      * @memberof DataMethodParser
      */
-    extractParamsFromString(search: string): { params: string[] , remainingString?: string  } {
-        const reg =  /\(([\w\W\s]+)\)(\s*->?\s*[\w\d]*\s*{)/
-        const paramsResult = search.match(reg)
-        const remainingString = paramsResult === null ? undefined : paramsResult[2]
-        const params = paramsResult === null ? [] : paramsResult[1].split(',').map(f => { return f.trim() })
+    // extractParamsFromString(search: string): { params: string[] , remainingString?: string  } {
+    //     const reg = /\((\s*[\w\d]*\s*[\w\d]*:?\s*[\w\d]*\s*,?){0,}\)/
+        
+    //     const paramsResult = search.match(reg)
+    //     const paramsString = paramsResult === null ? undefined : paramsResult[1]
+    //     const params = paramsString === undefined ? [] : paramsString.split(',').map(f => { return f.trim() })
+    //     return {
+    //         params
+    //     }
+    // }
+
+    extractMethodParams(search: string) : { params: string[] , remainingString: string } {
+
+        const { matchedString , remainingString  } = searchForClosingBracket('(' , search)
+        
+        const paramsString = matchedString || ''
         return {
-            params,
+            params: paramsString.split(',').filter(i => { return i.trim() }),
             remainingString
         }
     }
@@ -114,17 +127,16 @@ export class DataMethodParser extends DataParser {
         if(result === null) return {
             remainingString: search,
             data: {}
-        }
+        } 
 
-        const { params , remainingString } = this.extractParamsFromString(result[5])
-
+        const { params } = this.extractMethodParams(result[5])
         return {
             remainingString: result[5],
             data: {
                 outlet: result[1].length > 0 ? result[1] : undefined,
                 access_level: result[2].length > 0 ? result[2] : undefined,
                 methodName: result[4],
-                params: params,
+                params,
                 paramsString: result[5]
             }
         }
